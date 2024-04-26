@@ -1,63 +1,74 @@
+import 'package:bubble_mobile/home.dart';
+import 'package:bubble_mobile/teas.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: MyApp(),
+    home: NavBar(),
   ));
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class NavBar extends StatefulWidget {
+  const NavBar({Key? key}) : super(key: key);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  _NavBarState createState() => _NavBarState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _NavBarState extends State<NavBar> {
   int _selectedIndex = 0;
-
-  final List<IconData> _icons = [
-    Icons.home,
-    Icons.layers_outlined,
-    Icons.chrome_reader_mode,
-    Icons.settings,
+  static List<Widget> _widgetOptions = <Widget>[
+    HomeScreen(),
+    TeasScreen(),
   ];
+    void _onItemTapped(int index) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('Pagina ${_selectedIndex + 1}'),
+        child: _widgetOptions.elementAt(_selectedIndex),
       ),
       extendBody: true,
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        color: Colors.black,
-        child: IconTheme(
-          data: IconThemeData(color: Colors.white),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: _icons.asMap().entries.map((entry) {
-                final index = entry.key;
-                final icon = entry.value;
-                return IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                  },
-                  icon: Icon(
-                    icon,
-                    color: _selectedIndex == index ? Colors.orange : Colors.white,
-                  ),
-                );
-              }).toList(),
-            ),
+      bottomNavigationBar:  Container(
+          decoration: BoxDecoration(
+             borderRadius: BorderRadius.circular(20),
+            border: Border( top: BorderSide(color: Colors.amber, width: 3, style: BorderStyle.solid),)  
           ),
-        ),
-      ),
-    );
+          child: 
+          BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.black,
+            unselectedItemColor: Colors.white.withOpacity(.60),
+            selectedFontSize: 14,
+            unselectedFontSize: 14,
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.amber,
+            onTap: _onItemTapped,
+            items: [
+              BottomNavigationBarItem(
+                label: 'Home',
+                icon: Icon(Icons.home),
+              ),
+              BottomNavigationBarItem(
+                label: 'Teas',
+                icon: Icon(Icons.layers),
+              ),
+              BottomNavigationBarItem(
+                label: 'Saves',
+                icon: Icon(Icons.chrome_reader_mode),
+              ),
+              BottomNavigationBarItem(
+                label: 'Settings',
+                icon: Icon(Icons.settings),
+              ),
+            ],
+          ),
+        )
+      );
   }
 }
