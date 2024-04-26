@@ -5,6 +5,13 @@ import 'package:flutter/material.dart';
 void main() {
   runApp(MaterialApp(
     home: NavBar(),
+    theme: ThemeData(
+      colorScheme: const ColorScheme.dark(
+          primary: Colors.amber,
+          brightness: Brightness.dark,
+        ),
+        useMaterial3: true,
+    ),
   ));
 }
 
@@ -36,14 +43,13 @@ class _NavBarState extends State<NavBar> {
       extendBody: true,
       bottomNavigationBar:  Container(
           decoration: BoxDecoration(
-             borderRadius: BorderRadius.circular(20),
-            border: Border( top: BorderSide(color: Colors.amber, width: 3, style: BorderStyle.solid),)  
+            border: Border( top: BorderSide(color: Colors.amber, width: 1, style: BorderStyle.solid),)  
           ),
           child: 
           BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.black,
-            unselectedItemColor: Colors.white.withOpacity(.60),
+            unselectedItemColor: Colors.white.withOpacity(.80),
             selectedFontSize: 14,
             unselectedFontSize: 14,
             currentIndex: _selectedIndex,
@@ -55,7 +61,7 @@ class _NavBarState extends State<NavBar> {
                 icon: Icon(Icons.home),
               ),
               BottomNavigationBarItem(
-                label: 'Teas',
+                label: 'Flavors',
                 icon: Icon(Icons.layers),
               ),
               BottomNavigationBarItem(
