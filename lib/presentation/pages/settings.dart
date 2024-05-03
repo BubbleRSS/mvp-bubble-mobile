@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bubble_mobile/presentation/components/SettingsTile.dart';
 import 'package:file_picker/_internal/file_picker_web.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -47,23 +48,25 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Configurações')),
-      body: ListView(
-        children: [
-          ListTile(
-            title: const Text('Exportar backup'),
-            subtitle: const Text('Exporte seus dados através do arquivo JSON'),
-            leading: const Icon(Icons.backup_rounded),
-            onTap: () {},
+        appBar: AppBar(title: const Text('Configurações')),
+        body: Container(
+          padding: const EdgeInsets.all(16),
+          child: ListView(
+            children: [
+              SettingsTile(
+                title: 'Exportar backup',
+                subtitle: 'Exporte seus dados através do arquivo JSON',
+                leadingIcon: Icons.backup_rounded,
+                onTap: () => {},
+              ),
+              SettingsTile(
+                title: 'Importar backup',
+                subtitle: 'Importe seus dados através do arquivo JSON',
+                leadingIcon: Icons.restore_rounded,
+                onTap: () => {},
+              ),
+            ],
           ),
-          ListTile(
-            title: const Text('Importar backup'),
-            subtitle: const Text('Importe seus dados através do arquivo JSON'),
-            leading: const Icon(Icons.restore_rounded),
-            onTap: () => _openFileExplorer(context),
-          ),
-        ],
-      ),
-    );
+        ));
   }
 }
