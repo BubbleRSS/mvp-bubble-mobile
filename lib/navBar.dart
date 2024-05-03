@@ -1,16 +1,17 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:bubble_mobile/home.dart';
 import 'package:bubble_mobile/teas.dart';
-import 'package:flutter/material.dart';
 
 void main() {
   runApp(MaterialApp(
     home: NavBar(),
     theme: ThemeData(
-      colorScheme: const ColorScheme.dark(
-          primary: Colors.amber,
-          brightness: Brightness.dark,
-        ),
-        useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.amber,
+        brightness: Brightness.dark,
+      ),
+      useMaterial3: true,
     ),
   ));
 }
@@ -23,70 +24,52 @@ class NavBar extends StatefulWidget {
 }
 
 class _NavBarState extends State<NavBar> {
-  int _selectedIndex = 0;
   static List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
     TeasScreen(),
   ];
-    void _onItemTapped(int index) {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(NavigationController());
+
     return Scaffold(
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      extendBody: true,
-      bottomNavigationBar:  Container(
-          decoration: BoxDecoration(
-            border: Border( top: BorderSide(color: Colors.amber, width: 1, style: BorderStyle.solid),)  
+      body: Obx(() => controller.screens[controller.selectedIndex.value]),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: Colors.amber.withOpacity(0.5),
+              width: 1,
+              style: BorderStyle.solid,
+            ),
           ),
-          child: 
-          BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.black,
-            unselectedItemColor: Colors.white.withOpacity(.80),
-            selectedFontSize: 14,
-            unselectedFontSize: 14,
-            currentIndex: _selectedIndex,
-            selectedItemColor: Colors.amber,
-            onTap: _onItemTapped,
-            items: [
-              BottomNavigationBarItem(
-                label: 'Home',
-                icon: Icon(Icons.home, 
-                           color: _selectedIndex == 0 ? Colors.amber : Colors.white, 
-                           ),
-                activeIcon: Icon(Icons.home_outlined, color: Colors.amber),
-              ),
-              BottomNavigationBarItem(
-                label: 'Flavors',
-                icon: Icon(Icons.layers, 
-                           color: _selectedIndex == 1 ? Colors.amber : Colors.white,
-                           ),
-                activeIcon: Icon(Icons.layers_outlined, color: Colors.amber),
-              ),
-              BottomNavigationBarItem(
-                label: 'Saves',
-                icon: Icon(Icons.chrome_reader_mode, 
-                           color: _selectedIndex == 2 ? Colors.amber : Colors.white,
-                           ),
-                activeIcon: Icon(Icons.chrome_reader_mode_outlined, color: Colors.amber),
-              ),
-              BottomNavigationBarItem(
-                label: 'Settings',
-                icon: Icon(Icons.settings, 
-                           color: _selectedIndex == 3 ? Colors.amber : Colors.white,
-                           ),
-                activeIcon: Icon(Icons.settings_outlined, color: Colors.amber),
-              ),
+        ),
+        child: Obx(
+          () => NavigationBar(
+            height: 80,
+            elevation: 0,
+            selectedIndex: controller.selectedIndex.value,
+            onDestinationSelected: (index) =>
+                controller.selectedIndex.value = index,
+            destinations: const [
+              NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+              NavigationDestination(icon: Icon(Icons.local_cafe), label: 'Teas'),
+              NavigationDestination(icon: Icon(Icons.save), label: 'Save'),
+              NavigationDestination(icon: Icon(Icons.settings), label: 'Config'),
             ],
           ),
-        )
-      );
+        ),
+      ),
+    );
   }
+}
+
+class NavigationController extends GetxController {
+  final Rx<int> selectedIndex = 0.obs;
+
+  final screens = [
+    HomeScreen(),
+    TeasScreen()
+  ];
 }
