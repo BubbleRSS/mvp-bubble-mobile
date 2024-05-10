@@ -1,4 +1,3 @@
-import 'package:bubble_mobile/presentation/pages/settings.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -21,7 +20,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: SettingsPage(key: key),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }

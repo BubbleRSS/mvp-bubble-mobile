@@ -63,7 +63,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: 'Importar backup',
                 subtitle: 'Importe seus dados através do arquivo JSON',
                 leadingIcon: Icons.restore_rounded,
-                onTap: () => {},
+                onTap: () => _openFileExplorer(context),
               ),
             ],
           ),
