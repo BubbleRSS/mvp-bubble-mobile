@@ -1,33 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:bubble_mobile/home.dart';
-import 'package:bubble_mobile/teas.dart';
-
-void main() {
-  runApp(MaterialApp(
-    home: NavBar(),
-    theme: ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.amber,
-        brightness: Brightness.dark,
-      ),
-      useMaterial3: true,
-    ),
-  ));
-}
 
 class NavBar extends StatefulWidget {
-  const NavBar({Key? key}) : super(key: key);
+  const NavBar({super.key});
 
   @override
-  _NavBarState createState() => _NavBarState();
+  State<NavBar> createState() => _NavBarState();
 }
 
 class _NavBarState extends State<NavBar> {
-  static List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(),
-    TeasScreen(),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -68,8 +49,5 @@ class _NavBarState extends State<NavBar> {
 class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
 
-  final screens = [
-    HomeScreen(),
-    TeasScreen()
-  ];
+  final screens = [];
 }
