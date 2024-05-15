@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:bubble_mobile/presentation/pages/home.dart';
 import 'package:bubble_mobile/data/database_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
-  databaseFactory = databaseFactoryFfi;
+
+  if (kIsWeb) {
+    databaseFactory = databaseFactoryFfiWeb;
+  } else {
+    databaseFactory = databaseFactoryFfi;
+  } 
 
   await DatabaseProvider().database;
 
