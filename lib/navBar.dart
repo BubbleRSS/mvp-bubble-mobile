@@ -53,10 +53,10 @@ class _NavBarState extends State<NavBar> {
             onDestinationSelected: (index) =>
                 controller.selectedIndex.value = index,
             destinations: const [
-              NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-              NavigationDestination(icon: Icon(Icons.local_cafe), label: 'Teas'),
-              NavigationDestination(icon: Icon(Icons.save), label: 'Save'),
-              NavigationDestination(icon: Icon(Icons.settings), label: 'Config'),
+              NavigationDestination(icon: Icon(Icons.home), label: 'Home', selectedIcon: Icon(Icons.home_outlined),),
+              NavigationDestination(icon: Icon(Icons.local_cafe), label: 'Teas', selectedIcon: Icon(Icons.local_cafe_outlined)),
+              NavigationDestination(icon: Icon(Icons.save), label: 'Save', selectedIcon: Icon(Icons.save_outlined)),
+              NavigationDestination(icon: Icon(Icons.settings), label: 'Config', selectedIcon: Icon(Icons.settings_outlined)),
             ],
           ),
         ),
