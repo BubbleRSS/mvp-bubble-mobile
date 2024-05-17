@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:bubble_mobile/presentation/components/SettingsTile.dart';
+import 'package:bubble_mobile/presentation/components/settings_tile.dart';
 import 'package:file_picker/_internal/file_picker_web.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
