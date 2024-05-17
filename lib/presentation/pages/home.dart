@@ -3,7 +3,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:bubble_mobile/presentation/components/feed.dart';
+import 'package:bubble_mobile/presentation/components/feed_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -46,7 +46,7 @@ class HomePageState extends State<HomePage> {
       body: ListView.builder(
         itemCount: arrayFeeds.length,
         itemBuilder: (BuildContext context, int index) {
-          return Feed(arrayFeeds[index]);
+          return FeedCard(arrayFeeds[index]);
         },
       ),
     );

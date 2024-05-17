@@ -3,16 +3,16 @@
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class Feed extends StatefulWidget {
+class FeedCard extends StatefulWidget {
   final Map<String, dynamic> feed;
 
-  Feed(this.feed, {Key? key});
+  FeedCard(this.feed, {Key? key});
 
   @override
-  State<Feed> createState() => FeedState();
+  State<FeedCard> createState() => FeedCardState();
 }
 
-class FeedState extends State<Feed> {
+class FeedCardState extends State<FeedCard> {
   bool openInBrowserClicked = false;
   bool shareClicked = false;
   bool likeClicked = false;
