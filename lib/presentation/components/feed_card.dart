@@ -76,76 +76,80 @@ class FeedCardState extends State<FeedCard> {
                 ),
               ),
               SizedBox(height: 10.0),
-              Row(
-                children: [
-                   Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          openInBrowserClicked = !openInBrowserClicked;
-                        });
-                      },
-                      icon: openInBrowserClicked ? Icon(Icons.open_in_new) : Icon(Icons.open_in_new),
-                      label: Text(''),
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadiusDirectional.only(
-                            topStart: Radius.circular(10.0),
-                            bottomStart: Radius.circular(10.0),
-                          ),
-                        ),
-                        padding: EdgeInsets.all(15.0),
-                      ),
-                    ),                  
-                  ),
-                  SizedBox(width: 5.0),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          likeClicked = !likeClicked;
-                        });
-                      },
-                      icon: likeClicked ? Icon(Icons.favorite_rounded) : Icon(Icons.favorite_outline_rounded),
-                      label: Text(''),
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadiusDirectional.only(
-                            topEnd: Radius.circular(0.0),
-                            bottomEnd: Radius.circular(0.0),
-                          ),
-                        ),
-                        padding: EdgeInsets.all(15.0),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 5.0),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          shareClicked = !shareClicked;
-                        });
-                      },
-                      icon: shareClicked ? Icon(Icons.share_rounded) : Icon(Icons.share_outlined),
-                      label: Text(''),
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadiusDirectional.only(
-                            topEnd: Radius.circular(10.0),
-                            bottomEnd: Radius.circular(10.0),
-                          ),
-                        ),
-                        padding: EdgeInsets.all(15.0),
-                      ),
-                    ),                  
-                  ),
-                ],
-              )
+              cardButtons()
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Row cardButtons() {
+    return Row(
+      children: [
+          Expanded(
+          child: ElevatedButton.icon(
+            onPressed: () {
+              setState(() {
+                openInBrowserClicked = !openInBrowserClicked;
+              });
+            },
+            icon: openInBrowserClicked ? Icon(Icons.open_in_new) : Icon(Icons.open_in_new),
+            label: Text(''),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusDirectional.only(
+                  topStart: Radius.circular(10.0),
+                  bottomStart: Radius.circular(10.0),
+                ),
+              ),
+              padding: EdgeInsets.all(15.0),
+            ),
+          ),                  
+        ),
+        SizedBox(width: 5.0),
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: () {
+              setState(() {
+                likeClicked = !likeClicked;
+              });
+            },
+            icon: likeClicked ? Icon(Icons.favorite_rounded) : Icon(Icons.favorite_outline_rounded),
+            label: Text(''),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusDirectional.only(
+                  topEnd: Radius.circular(0.0),
+                  bottomEnd: Radius.circular(0.0),
+                ),
+              ),
+              padding: EdgeInsets.all(15.0),
+            ),
+          ),
+        ),
+        SizedBox(width: 5.0),
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: () {
+              setState(() {
+                shareClicked = !shareClicked;
+              });
+            },
+            icon: shareClicked ? Icon(Icons.share_rounded) : Icon(Icons.share_outlined),
+            label: Text(''),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusDirectional.only(
+                  topEnd: Radius.circular(10.0),
+                  bottomEnd: Radius.circular(10.0),
+                ),
+              ),
+              padding: EdgeInsets.all(15.0),
+            ),
+          ),                  
+        ),
+      ],
     );
   }
 
