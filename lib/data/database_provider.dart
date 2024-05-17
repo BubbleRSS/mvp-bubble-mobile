@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseProvider {
@@ -59,5 +63,28 @@ class DatabaseProvider {
         FOREIGN KEY (tea_id) REFERENCES Tea(id)
       )
     ''');
+  }
+
+   Future<void> exportDatabase() async {
+    try {
+      final databasePath = await getDatabasesPath();
+      final path = join(databasePath, _databaseName);
+
+      final directory = await getApplicationDocumentsDirectory();
+      final exportPath = join(directory.path, _databaseName);
+
+      final dbFile = File(path);
+      final exportFile = File(exportPath);
+
+      if (await dbFile.exists()) {
+        await exportFile.writeAsBytes(await dbFile.readAsBytes());
+
+        Share.shareXFiles([XFile(exportPath)], text: 'Bubble database export');
+      } else {
+        print('Database file does not exist.');
+      }
+    } catch (e) {
+      print('Error exporting database: $e');
+    }
   }
 }
