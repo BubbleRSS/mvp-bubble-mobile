@@ -2,11 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class FeedCard extends StatefulWidget {
-  final Map<String, dynamic> feed;
+  final List feed;
+  final int index;
 
-  FeedCard(this.feed, {Key? key});
+  FeedCard(this.feed, this.index, {Key? key});
 
   @override
   State<FeedCard> createState() => FeedCardState();
@@ -19,7 +23,10 @@ class FeedCardState extends State<FeedCard> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> feed = widget.feed;
+    List feed = widget.feed;
+    int index = widget.index;
+
+    // print("INDEX FEED: $feed[index]");
 
     return Card(
       child: Container(
@@ -29,49 +36,26 @@ class FeedCardState extends State<FeedCard> {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  radius: 20.0,
-                  backgroundImage: NetworkImage('${feed['plataformImage']}'),
-                ),
+                // imageProfile(feed[index]['image']['url']),
                 SizedBox(width: 10.0),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      feed['plataformName'],
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      calculateDatePost(feed['datePostFeed']),
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
+                    // plataformName(feed[index]['title']),
+                    datePost(feed[index]['pubDate']),
                   ],
                 ),
               ],
             ),
             SizedBox(height: 10.0),
-            Text(
-              feed['description'] ?? '',
-              style: TextStyle(
-                fontSize: 16.0,
-              ),
-            ),
+            description(feed[index]['description']),
             SizedBox(height: 10.0),
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
               ),
               clipBehavior: Clip.antiAlias,
-              child: Image.network(
-                '${feed['plataformImage']}',
-                height: 200.0,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+              // child: thumbnail(feed[index]['enclosure']['url'])
             ),
             SizedBox(height: 10.0),
             cardButtons()
@@ -150,13 +134,57 @@ class FeedCardState extends State<FeedCard> {
     );
   }
 
-  String calculateDatePost (String feed) {
+  plataformName (plataformName) {
+    return Text(
+      plataformName,
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  datePost(String datePost) {
+    DateTime parsedDate = DateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", "en_US").parseUTC(datePost);
+    print("DATA: $parsedDate");
+    return Text(
+      calculateDatePost(parsedDate),
+      style: TextStyle(
+        color: Colors.grey,
+      ),
+    );
+  }
+
+  calculateDatePost (datePost) {
     timeago.setLocaleMessages('pt_br', timeago.PtBrMessages());
-    final DateTime datePostFeed = DateTime.parse(feed);
     return '${timeago.format(
-      datePostFeed, 
+      datePost, 
       locale: 'pt_br'
     )}';
+  }
+
+  imageProfile (imageProfile) {
+    return CircleAvatar(
+      radius: 20.0,
+      backgroundImage: NetworkImage('$imageProfile'),
+    );
+  }
+
+  description (description) {
+    return Text(
+      description,
+      style: TextStyle(
+        fontSize: 16.0,
+      ),
+    );
+  }
+
+  thumbnail (image) {
+    return Image.network(
+      '$image',
+      height: 200.0,
+      width: double.infinity,
+      fit: BoxFit.cover,
+    );
   }
 
 }
