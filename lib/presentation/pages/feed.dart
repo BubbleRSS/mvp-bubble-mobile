@@ -11,22 +11,25 @@ class FeedPage extends StatefulWidget {
 }
 
 class FeedPageState extends State<FeedPage> {
-  late List feeds = [];
+  RssFeed? feeds;
   late GlobalKey<RefreshIndicatorState> refreshKey;
   final FeedApiState feedApiState = FeedApiState();
+
+  Future<void> loadFeeds() async {
+    await feedApiState.getFeeds().then((result) {
+      if (null != result || result.toString().isNotEmpty) {
+        setState(() {
+          feeds = result;
+        });
+      }
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     refreshKey = GlobalKey<RefreshIndicatorState>();
-    loadFeed();
-  }
-
-  Future<void> loadFeed() async {
-    List result = await feedApiState.getFeeds();
-    setState(() {
-      feeds = result;
-    });
+    loadFeeds();
   }
 
   @override
@@ -36,7 +39,7 @@ class FeedPageState extends State<FeedPage> {
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: ListView.builder(
-          itemCount: feeds.length,
+          itemCount: feeds?.items?.length,
           itemBuilder: (BuildContext context, int index) {
             return Column(
               children: [

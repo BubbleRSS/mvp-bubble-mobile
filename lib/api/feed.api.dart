@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webfeed/webfeed.dart';
 import 'package:http/http.dart' as http;
-import 'package:xml2json/xml2json.dart';
-import 'dart:convert';
 
 class FeedApi extends StatefulWidget {
   const FeedApi({super.key});
@@ -13,25 +11,17 @@ class FeedApi extends StatefulWidget {
 
 class FeedApiState extends State<FeedApi> {
   static const String feedUrl = 'https://nitter.poast.org/geekversez/rss';
-  final Xml2Json xml2json = Xml2Json();
 
-  Future<List> getFeeds() async {
+  Future<RssFeed?> getFeeds() async {
     try {
-      const feedUrl = 'https://nitter.poast.org/geekversez/rss';
-
-      final response = await http.get(Uri.parse(feedUrl));
-      xml2json.parse(response.body);
-
-      var feedData = xml2json.toParker();
-      var data = json.decode(feedData);
-      List feeds = data['rss']['channel']['item'];
-      print('RSS feed: $feeds');
-
-      return feeds ?? [];
+      final client = http.Client();
+      final response = await client.get(Uri.parse(feedUrl));
+      return RssFeed.parse(response.body);
     } catch (e) {
-      print(e);
-      return [];
+      print('Ocorreu um erro ao fazer requisição: $e');
     }
+
+    return null;
   }
 
   @override

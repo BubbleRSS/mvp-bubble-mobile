@@ -2,15 +2,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:intl/intl.dart';
+import 'package:webfeed/webfeed.dart';
+import 'package:html/parser.dart' as html_parser;
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class FeedCard extends StatefulWidget {
-  final List feed;
-  final int index;
+  RssFeed? feeds;
+  int index;
 
-  FeedCard(this.feed, this.index, {Key? key});
+  FeedCard(this.feeds, this.index, {Key? key});
 
   @override
   State<FeedCard> createState() => FeedCardState();
@@ -23,10 +24,8 @@ class FeedCardState extends State<FeedCard> {
 
   @override
   Widget build(BuildContext context) {
-    List feed = widget.feed;
+    RssFeed? feeds = widget.feeds;
     int index = widget.index;
-
-    // print("INDEX FEED: $feed[index]");
 
     return Card(
       child: Container(
@@ -34,31 +33,35 @@ class FeedCardState extends State<FeedCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                // imageProfile(feed[index]['image']['url']),
-                SizedBox(width: 10.0),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // plataformName(feed[index]['title']),
-                    datePost(feed[index]['pubDate']),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 10.0),
-            description(feed[index]['description']),
-            SizedBox(height: 10.0),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
+            if (feeds != null || feeds?.items != null) ...{
+              Row(
+                children: [
+                  imageProfile(feeds?.image?.url),
+                  SizedBox(width: 10.0),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      plataformName(feeds?.title),
+                      datePost(feeds?.items?[index].pubDate),
+                    ],
+                  ),
+                ],
               ),
-              clipBehavior: Clip.antiAlias,
-              // child: thumbnail(feed[index]['enclosure']['url'])
-            ),
-            SizedBox(height: 10.0),
-            cardButtons()
+              SizedBox(height: 10.0),
+              description(feeds?.items?[index].title),
+              SizedBox(height: 10.0),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                clipBehavior: Clip.antiAlias,
+                // child: thumbnail(feeds?.items?[index].description)
+              ),
+              SizedBox(height: 10.0),
+              cardButtons()
+            } else ...{ 
+              CircularProgressIndicator()
+            },
           ],
         ),
       ),
@@ -136,22 +139,24 @@ class FeedCardState extends State<FeedCard> {
 
   plataformName (plataformName) {
     return Text(
-      plataformName,
+      plataformName ?? '',
       style: TextStyle(
         fontWeight: FontWeight.bold,
       ),
     );
   }
 
-  datePost(String datePost) {
-    DateTime parsedDate = DateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", "en_US").parseUTC(datePost);
-    print("DATA: $parsedDate");
-    return Text(
-      calculateDatePost(parsedDate),
-      style: TextStyle(
-        color: Colors.grey,
-      ),
-    );
+  datePost(datePost) {
+    if (datePost != null) {
+      return Text(
+        calculateDatePost(datePost),
+        style: TextStyle(
+          color: Colors.grey,
+        ),
+      );
+    } else {
+      return 'Unknown';
+    }
   }
 
   calculateDatePost (datePost) {
@@ -162,29 +167,69 @@ class FeedCardState extends State<FeedCard> {
     )}';
   }
 
-  imageProfile (imageProfile) {
+  imageProfile (image) {
     return CircleAvatar(
       radius: 20.0,
-      backgroundImage: NetworkImage('$imageProfile'),
+      backgroundImage: NetworkImage("https://pbs.twimg.com/profile_images/1389411778916978698/kA7uods9_400x400.jpg"),
     );
   }
 
   description (description) {
-    return Text(
-      description,
-      style: TextStyle(
-        fontSize: 16.0,
-      ),
+    return Linkify(
+      onOpen: openLink,
+      text: description ?? '',
+      style: TextStyle(fontSize: 16),
+      linkStyle: TextStyle(color: Colors.blue),
     );
   }
 
-  thumbnail (image) {
-    return Image.network(
-      '$image',
-      height: 200.0,
-      width: double.infinity,
-      fit: BoxFit.cover,
-    );
+  Widget thumbnail(String? description) {
+    String? imageFeed = extractImageUrl(description);
+
+    if (imageFeed == null || imageFeed.isEmpty) {
+      return Container(
+        height: 200.0,
+        width: double.infinity,
+        color: Colors.grey,
+        child: Center(child: Icon(Icons.broken_image, size: 50.0)),
+      );
+    } else {
+      return Image.network(
+        imageFeed,
+        height: 200.0,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            height: 200.0,
+            width: double.infinity,
+            color: Colors.grey,
+            child: Center(child: Icon(Icons.broken_image, size: 50.0)),
+          );
+        },
+      );
+    }
+  }
+
+  void openLink(LinkableElement link) async {
+    if (await canLaunch(link.url)) {
+      await launch(link.url);
+    } else {
+      throw 'Could not launch $link';
+    }
+  }
+
+  String? extractImageUrl(String? description) {
+    if (description == null) return null;
+
+    var document = html_parser.parse(description);
+    var imgTags = document.getElementsByTagName('img');
+
+    if (imgTags.isNotEmpty) {
+      return imgTags.first.attributes['src'];
+    }
+
+    return null;
   }
 
 }
