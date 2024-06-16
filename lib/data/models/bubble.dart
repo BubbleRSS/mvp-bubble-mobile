@@ -1,18 +1,18 @@
 class Bubble {
   final int? id; // Nullable ID
-  final int teaId;
-  final String header;
-  final String description;
-  final String imageSource;
-  final String datetime;
+  final int? teaId;
+  final String? header;
+  final String? description;
+  final String? imageSource;
+  final String? datetime;
 
   Bubble({
     this.id,
-    required this.teaId,
-    required this.header,
-    required this.description,
-    required this.imageSource,
-    required this.datetime,
+    this.teaId,
+    this.header,
+    this.description,
+    this.imageSource,
+    this.datetime,
   });
 
   factory Bubble.fromMap(Map<String, dynamic> map) {

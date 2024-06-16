@@ -1,34 +1,29 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, unnecessary_string_interpolations, must_be_immutable
+// ignore_for_file: prefer_const_constructors, must_be_immutable
+import 'package:provider/provider.dart';
+import 'package:bubble_mobile/cache/feed_cache_provider.dart';
+import 'package:bubble_mobile/data/models/bubble.dart';
 import 'package:bubble_mobile/data/repositories/bubble_repository.dart';
 import 'package:bubble_mobile/data/services/bubble_service.dart';
 import 'package:bubble_mobile/presentation/components/buttons_feed_card.dart';
 import 'package:flutter/material.dart';
 
-class FeedCard extends StatefulWidget {
-  List<Map<String, dynamic>> feedStateProps;
-  int index;
-  final Function refreshCallback;
+class SavedFeedCard extends StatefulWidget {
+  Bubble bubble;
+  final VoidCallback refreshCallback;
 
-  FeedCard(this.feedStateProps, this.index, {required this.refreshCallback, Key? key});
+  SavedFeedCard(this.bubble, {required this.refreshCallback, Key? key});
 
   @override
-  State<FeedCard> createState() => FeedCardState();
+  State<SavedFeedCard> createState() => _SavedFeedCardState();
 }
 
-class FeedCardState extends State<FeedCard> {
+class _SavedFeedCardState extends State<SavedFeedCard> {
   BubbleService bubbleService = BubbleService();
   BubbleRepository bubbleRepository = BubbleRepository();
-  
-  late bool likeClicked;
-  late Map<String, dynamic> feed;
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      likeClicked = widget.feedStateProps[widget.index]['state'];
-      widget.feedStateProps[widget.index]['id'] = widget.index;
-      feed = widget.feedStateProps[widget.index];
-    });
+    Bubble bubble = widget.bubble;
 
     return Card(
       child: Container(
@@ -38,19 +33,19 @@ class FeedCardState extends State<FeedCard> {
           children: [
             Row(
               children: [
-                bubbleService.imageProfile(feed['image']),
+                bubbleService.imageProfile(bubble.imageSource),
                 SizedBox(width: 10.0),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    bubbleService.plataformName(feed['title']),
-                    bubbleService.datePost(feed['pubDate']),
+                    bubbleService.plataformName(bubble.header),
+                    bubbleService.datePost(bubble.datetime),
                   ],
                 ),
               ],
             ),
             SizedBox(height: 10.0),
-            bubbleService.description(feed['description']),
+            bubbleService.description(bubble.description),
             SizedBox(height: 10.0),
             Container(
               decoration: BoxDecoration(
@@ -59,16 +54,17 @@ class FeedCardState extends State<FeedCard> {
               clipBehavior: Clip.antiAlias,
             ),
             SizedBox(height: 10.0),
-            ButtonsFeedCard(widget.index, handleBubbleFunction: handleBubble)
+            ButtonsFeedCard(bubble.id!, handleBubbleFunction: removeBubble)
           ],
         ),
       ),
     );
   }
 
-  Future<void> handleBubble () async {
-    await bubbleService.saveOrDeleteBubble(feed);
-    widget.refreshCallback(widget.index);
+  Future<void> removeBubble() async {
+    await bubbleRepository.deleteBubble(widget.bubble.id);
+    Provider.of<FeedCacheProvider>(context, listen: false).toggleFeedState(widget.bubble.id!);
+    widget.refreshCallback();
   }
-
+  
 }
