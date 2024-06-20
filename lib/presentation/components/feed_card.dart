@@ -2,11 +2,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:webfeed/webfeed.dart';
+import 'package:html/parser.dart' as html_parser;
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FeedCard extends StatefulWidget {
-  final Map<String, dynamic> feed;
+  RssFeed? feeds;
+  int index;
 
-  FeedCard(this.feed, {Key? key});
+  FeedCard(this.feeds, this.index, {Key? key});
 
   @override
   State<FeedCard> createState() => FeedCardState();
@@ -19,7 +24,8 @@ class FeedCardState extends State<FeedCard> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> feed = widget.feed;
+    RssFeed? feeds = widget.feeds;
+    int index = widget.index;
 
     return Card(
       child: Container(
@@ -27,54 +33,35 @@ class FeedCardState extends State<FeedCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 20.0,
-                  backgroundImage: NetworkImage('${feed['plataformImage']}'),
+            if (feeds != null || feeds?.items != null) ...{
+              Row(
+                children: [
+                  imageProfile(feeds?.image?.url),
+                  SizedBox(width: 10.0),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      plataformName(feeds?.title),
+                      datePost(feeds?.items?[index].pubDate),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: 10.0),
+              description(feeds?.items?[index].title),
+              SizedBox(height: 10.0),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
-                SizedBox(width: 10.0),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      feed['plataformName'],
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      calculateDatePost(feed['datePostFeed']),
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 10.0),
-            Text(
-              feed['description'] ?? '',
-              style: TextStyle(
-                fontSize: 16.0,
+                clipBehavior: Clip.antiAlias,
+                // child: thumbnail(feeds?.items?[index].description)
               ),
-            ),
-            SizedBox(height: 10.0),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: Image.network(
-                '${feed['plataformImage']}',
-                height: 200.0,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ),
-            SizedBox(height: 10.0),
-            cardButtons()
+              SizedBox(height: 10.0),
+              cardButtons()
+            } else ...{ 
+              CircularProgressIndicator()
+            },
           ],
         ),
       ),
@@ -150,13 +137,99 @@ class FeedCardState extends State<FeedCard> {
     );
   }
 
-  String calculateDatePost (String feed) {
+  plataformName (plataformName) {
+    return Text(
+      plataformName ?? '',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  datePost(datePost) {
+    if (datePost != null) {
+      return Text(
+        calculateDatePost(datePost),
+        style: TextStyle(
+          color: Colors.grey,
+        ),
+      );
+    } else {
+      return 'Unknown';
+    }
+  }
+
+  calculateDatePost (datePost) {
     timeago.setLocaleMessages('pt_br', timeago.PtBrMessages());
-    final DateTime datePostFeed = DateTime.parse(feed);
     return '${timeago.format(
-      datePostFeed, 
+      datePost, 
       locale: 'pt_br'
     )}';
+  }
+
+  imageProfile (image) {
+    return CircleAvatar(
+      radius: 20.0,
+      backgroundImage: NetworkImage("https://pbs.twimg.com/profile_images/1389411778916978698/kA7uods9_400x400.jpg"),
+    );
+  }
+
+  description (description) {
+    return Linkify(
+      onOpen: openLink,
+      text: description ?? '',
+      style: TextStyle(fontSize: 16),
+      linkStyle: TextStyle(color: Colors.blue),
+    );
+  }
+
+  Widget thumbnail(String? description) {
+    String? imageFeed = extractImageUrl(description);
+
+    if (imageFeed == null || imageFeed.isEmpty) {
+      return Container(
+        height: 200.0,
+        width: double.infinity,
+        color: Colors.grey,
+        child: Center(child: Icon(Icons.broken_image, size: 50.0)),
+      );
+    } else {
+      return Image.network(
+        imageFeed,
+        height: 200.0,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            height: 200.0,
+            width: double.infinity,
+            color: Colors.grey,
+            child: Center(child: Icon(Icons.broken_image, size: 50.0)),
+          );
+        },
+      );
+    }
+  }
+
+  void openLink(LinkableElement link) async {
+    if (await canLaunch(link.url)) {
+      await launch(link.url);
+    } else {
+      throw 'Could not launch $link';
+    }
+  }
+
+  String? extractImageUrl(String? description) {
+    if (description == null) return null;
+
+    var document = html_parser.parse(description);
+    var imgTags = document.getElementsByTagName('img');
+
+    if (imgTags.isNotEmpty) {
+      return imgTags.first.attributes['src'];
+    }
+
+    return null;
   }
 
 }
