@@ -1,7 +1,7 @@
 import 'package:bubble_mobile/data/database_provider.dart';
 import 'package:bubble_mobile/data/models/tea.dart';
 import 'package:bubble_mobile/data/repositories/tea_repository.dart';
-import 'package:bubble_mobile/presentation/components/listFlavorAndTeas.dart';
+import 'package:bubble_mobile/presentation/pages/flavors.dart';
 import 'package:bubble_mobile/presentation/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:bubble_mobile/data/repositories/flavor_repository.dart';
