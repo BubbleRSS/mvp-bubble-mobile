@@ -8,15 +8,15 @@ import 'package:bubble_mobile/data/repositories/flavor_repository.dart';
 import 'package:bubble_mobile/data/models/flavor.dart';
 
 
-class AppBarrPage extends StatefulWidget {
+class AppBarPage extends StatefulWidget {
   @override
-  State<AppBarrPage> createState() => _AppBarrState();
+  State<AppBarPage> createState() => _AppBarState();
 }
 
-class _AppBarrState extends State<AppBarrPage> {
+class _AppBarState extends State<AppBarPage> {
   bool _isLoading = true;
-  final List<String> _options = ['Shopping', 'Comida', 'Xerecada'];
-  String dropdownValue = 'Shopping';
+  final List<String> _options = [];
+  var dropdownValue = null;
   final TeaRepository _teaRepository = TeaRepository();
 
   final FlavorRepository _flavorRepository = FlavorRepository();
@@ -111,7 +111,6 @@ class _AppBarrState extends State<AppBarrPage> {
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.0),
-                color: Colors.black,
               ),
               child: DropdownButton<String>(
                 value: dropdownValue,
@@ -150,7 +149,6 @@ class _AppBarrState extends State<AppBarrPage> {
             ),
           ),
         ],
-        backgroundColor: Colors.black,
       ),
       body: Center(
         child: _isLoading

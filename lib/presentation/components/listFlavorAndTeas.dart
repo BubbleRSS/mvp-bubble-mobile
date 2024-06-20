@@ -136,7 +136,7 @@ class _ListFlavorAndTeasState extends State<ListFlavorAndTeasPage> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AppBarrPage()),
+              MaterialPageRoute(builder: (context) => AppBarPage()),
             );
           },
         ),
