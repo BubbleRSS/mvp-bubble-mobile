@@ -8,9 +8,16 @@ import 'package:bubble_mobile/data/repositories/flavor_repository.dart';
 import 'package:bubble_mobile/data/models/flavor.dart';
 
 
-class AppBarPage extends StatefulWidget {
+class AppBarPage extends StatefulWidget implements PreferredSizeWidget{
+  final Key? key;
+
+  AppBarPage({this.key}) : super(key: key);
+  
   @override
   State<AppBarPage> createState() => _AppBarState();
+
+   @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
 
 class _AppBarState extends State<AppBarPage> {

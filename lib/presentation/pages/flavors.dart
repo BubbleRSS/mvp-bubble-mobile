@@ -1,6 +1,7 @@
 import 'package:bubble_mobile/data/models/flavor.dart';
 import 'package:bubble_mobile/data/repositories/flavor_repository.dart';
 import 'package:bubble_mobile/presentation/components/appBar.dart';
+import 'package:bubble_mobile/presentation/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -121,22 +122,17 @@ class _ListFlavorAndTeasState extends State<ListFlavorAndTeasPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
         title: const Center(
           child: Text(
-            "Cadastro de tarefas",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+            "Flavors List",
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white,),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AppBarPage()),
+              MaterialPageRoute(builder: (context) => HomePage()),
             );
           },
         ),

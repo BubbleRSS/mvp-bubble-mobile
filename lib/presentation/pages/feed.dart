@@ -35,7 +35,6 @@ class FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Feed')),
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: ListView.builder(
