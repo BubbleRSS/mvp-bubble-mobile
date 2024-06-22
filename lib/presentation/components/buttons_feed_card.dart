@@ -1,19 +1,25 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable, dead_code
+import 'package:bubble_mobile/data/services/bubble_service.dart';
 import 'package:provider/provider.dart';
 import 'package:bubble_mobile/cache/feed_cache_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ButtonsFeedCard extends StatefulWidget {
+  late Map<String, dynamic> feed;
   int index;
   Function handleBubbleFunction;
 
-  ButtonsFeedCard(this.index, {required this.handleBubbleFunction, Key? key});
+  ButtonsFeedCard(this.feed, this.index, {required this.handleBubbleFunction, Key? key});
 
   @override
   State<ButtonsFeedCard> createState() => _ButtonsFeedCardState();
 }
 
 class _ButtonsFeedCardState extends State<ButtonsFeedCard> {
+  BubbleService bubbleService = BubbleService();
+
+
   @override
   Widget build(BuildContext context) {
     bool defaultIcon = false;
@@ -23,11 +29,7 @@ class _ButtonsFeedCardState extends State<ButtonsFeedCard> {
       children: [
           Expanded(
           child: ElevatedButton.icon(
-            onPressed: () {
-              setState(() {
-                defaultIcon = !defaultIcon;
-              });
-            },
+            onPressed: () => openLinkFeed(defaultIcon),
             icon: defaultIcon ? Icon(Icons.open_in_new) : Icon(Icons.open_in_new),
             label: Text(''),
             style: ElevatedButton.styleFrom(
@@ -61,11 +63,7 @@ class _ButtonsFeedCardState extends State<ButtonsFeedCard> {
         SizedBox(width: 5.0),
         Expanded(
           child: ElevatedButton.icon(
-            onPressed: () {
-              setState(() {
-                defaultIcon = !defaultIcon;
-              });
-            },
+            onPressed: () => Share.share(widget.feed['link']),
             icon: defaultIcon ? Icon(Icons.share_rounded) : Icon(Icons.share_outlined),
             label: Text(''),
             style: ElevatedButton.styleFrom(
@@ -81,6 +79,14 @@ class _ButtonsFeedCardState extends State<ButtonsFeedCard> {
         ),
       ],
     );
+  }
+
+  void openLinkFeed (bool state) {
+    setState(() {
+      state = !state;
+    });
+
+    bubbleService.openLink(widget.feed['link']);
   }
 
   Future<void> handleBubble() async {

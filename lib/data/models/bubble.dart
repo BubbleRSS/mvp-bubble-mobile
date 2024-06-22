@@ -5,6 +5,7 @@ class Bubble {
   final String? description;
   final String? imageSource;
   final String? datetime;
+  final String? link; 
 
   Bubble({
     this.id,
@@ -13,6 +14,7 @@ class Bubble {
     this.description,
     this.imageSource,
     this.datetime,
+    this.link
   });
 
   factory Bubble.fromMap(Map<String, dynamic> map) {
@@ -23,6 +25,7 @@ class Bubble {
       description: map['description'],
       imageSource: map['image_source'],
       datetime: map['datetime'],
+      link: map['link']
     );
   }
 
@@ -34,6 +37,7 @@ class Bubble {
       'description': description,
       'image_source': imageSource,
       'datetime': datetime,
+      'link': link
     };
   }
 }

@@ -59,7 +59,7 @@ class FeedCardState extends State<FeedCard> {
               clipBehavior: Clip.antiAlias,
             ),
             SizedBox(height: 10.0),
-            ButtonsFeedCard(widget.index, handleBubbleFunction: handleBubble)
+            ButtonsFeedCard(feed, widget.index, handleBubbleFunction: handleBubble)
           ],
         ),
       ),

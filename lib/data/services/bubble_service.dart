@@ -16,7 +16,8 @@ class BubbleService {
       header: feed['title'], 
       description: feed['description'], 
       imageSource: feed['image'], 
-      datetime: feed['pubDate'].toString()
+      datetime: feed['pubDate'].toString(),
+      link: feed['link']
     );
 
     List<Bubble> listBubbles = await bubbleRepository.getBubbles();
@@ -85,11 +86,14 @@ class BubbleService {
     );
   }
 
-  void openLink(LinkableElement link) async {
-    if (await canLaunch(link.url)) {
+  void openLink(dynamic link) async {
+    if (link is LinkableElement && await canLaunch(link.url)) {
       await launch(link.url);
+    } else if (link is String && await canLaunch(link)) {
+      await launch(link);
     } else {
       throw 'Could not launch $link';
     }
   }
+
 }

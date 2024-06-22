@@ -35,6 +35,7 @@ class FeedPageState extends State<FeedPage> {
             'imageProfile': result.image?.url,
             'pubDate': items[i].pubDate,
             'description': items[i].title,
+            'link': items[i].link ?? items[i].guid ?? '',
             'state': Provider.of<FeedCacheProvider>(context, listen: false).getFeedState(i)
           });
         }

@@ -20,10 +20,22 @@ class SavedFeedCard extends StatefulWidget {
 class _SavedFeedCardState extends State<SavedFeedCard> {
   BubbleService bubbleService = BubbleService();
   BubbleRepository bubbleRepository = BubbleRepository();
+  Map<String, dynamic> feed = {};
 
   @override
   Widget build(BuildContext context) {
     Bubble bubble = widget.bubble;
+
+    setState(() {
+      feed.addAll({
+        'id': bubble.id,
+        'title': bubble.header,
+        'imageProfile': bubble.imageSource,
+        'pubDate': bubble.datetime,
+        'description': bubble.description,
+        'link': bubble.link
+      });
+    });
 
     return Card(
       child: Container(
@@ -54,7 +66,7 @@ class _SavedFeedCardState extends State<SavedFeedCard> {
               clipBehavior: Clip.antiAlias,
             ),
             SizedBox(height: 10.0),
-            ButtonsFeedCard(bubble.id!, handleBubbleFunction: removeBubble)
+            ButtonsFeedCard(feed, bubble.id!, handleBubbleFunction: removeBubble)
           ],
         ),
       ),
