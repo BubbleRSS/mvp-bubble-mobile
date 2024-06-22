@@ -1,3 +1,4 @@
+import 'package:bubble_mobile/presentation/components/appBar.dart';
 import 'package:bubble_mobile/presentation/pages/feed.dart';
 import 'package:bubble_mobile/presentation/pages/saved_feeds.dart';
 import 'package:bubble_mobile/presentation/pages/settings.dart';
@@ -19,6 +20,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       body: Obx(() => controller.screens[controller.selectedIndex.value]),
+      appBar: AppBarPage(),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border(
