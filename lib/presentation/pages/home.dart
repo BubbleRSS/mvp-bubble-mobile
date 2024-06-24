@@ -1,5 +1,6 @@
 import 'package:bubble_mobile/presentation/components/appBar.dart';
 import 'package:bubble_mobile/presentation/pages/feed.dart';
+import 'package:bubble_mobile/presentation/pages/flavors.dart';
 import 'package:bubble_mobile/presentation/pages/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,7 +20,6 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       body: Obx(() => controller.screens[controller.selectedIndex.value]),
-      appBar: AppBarPage(),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border(
@@ -38,10 +38,10 @@ class _HomePageState extends State<HomePage> {
             onDestinationSelected: (index) =>
                 controller.selectedIndex.value = index,
             destinations: const [
-              NavigationDestination(icon: Icon(Icons.home), label: 'Home', selectedIcon: Icon(Icons.home_outlined),),
-              NavigationDestination(icon: Icon(Icons.local_cafe), label: 'Teas', selectedIcon: Icon(Icons.local_cafe_outlined)),
-              NavigationDestination(icon: Icon(Icons.save), label: 'Save', selectedIcon: Icon(Icons.save_outlined)),
-              NavigationDestination(icon: Icon(Icons.settings), label: 'Config', selectedIcon: Icon(Icons.settings_outlined)),
+              NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Home', selectedIcon: Icon(Icons.home),),
+              NavigationDestination(icon: Icon(Icons.local_cafe_outlined), label: 'Flavors', selectedIcon: Icon(Icons.local_cafe)),
+              NavigationDestination(icon: Icon(Icons.favorite_outline), label: 'Save', selectedIcon: Icon(Icons.favorite)),
+              NavigationDestination(icon: Icon(Icons.settings_outlined), label: 'Config', selectedIcon: Icon(Icons.settings)),
             ],
           ),
         ),
@@ -55,6 +55,7 @@ class NavigationController extends GetxController {
 
   final screens = [
     const FeedPage(),
+    ListFlavorAndTeasPage(),
     const SettingsPage()
   ];
 }

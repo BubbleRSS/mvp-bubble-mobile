@@ -1,3 +1,4 @@
+import 'package:bubble_mobile/presentation/components/appBar.dart';
 import 'package:flutter/material.dart';
 import 'package:webfeed/webfeed.dart';
 import 'package:bubble_mobile/api/feed.api.dart';
@@ -35,6 +36,7 @@ class FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar:  AppBarPage(),
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: ListView.builder(

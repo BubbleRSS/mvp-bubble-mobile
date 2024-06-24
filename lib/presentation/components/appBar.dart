@@ -62,11 +62,12 @@ class _AppBarState extends State<AppBarPage> {
             icon:_iconFlavorController.text,
           );
           await _flavorRepository.insertFlavor(newFlavor);
-          await loadFlavors();
           setState(() {
             _titleFlavorController.clear();
             _colorFlavorController.clear();
             _iconFlavorController.clear();
+            _flavors.add(newFlavor);
+            dropdownValue = newFlavor;
           });
 
         const snackBar = SnackBar(content: Text('Flavor adicionada com sucesso!', style: TextStyle(fontWeight: FontWeight.bold)), backgroundColor: Colors.green);
@@ -88,7 +89,6 @@ class _AppBarState extends State<AppBarPage> {
           rssLink: _rssTeaController.text,
         );
         await _teaRepository.insertTea(newTea);
-        await loadFlavors();
         setState(() {
           _titleTeaController.clear();
           _rssTeaController.clear();

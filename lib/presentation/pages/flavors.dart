@@ -99,7 +99,7 @@ class _ListFlavorAndTeasState extends State<ListFlavorAndTeasPage> {
     if (id != null) {
       await _teaRepository.deleteTea(id);
       loadFlavors();
-      const snackBar = SnackBar(content: Text('Flavor e teas Excluido com sucesso',  style: TextStyle(fontWeight: FontWeight.bold)), backgroundColor: Colors.yellow);
+      const snackBar = SnackBar(content: Text('Tea Excluido com sucesso',  style: TextStyle(fontWeight: FontWeight.bold)), backgroundColor: Colors.yellow);
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
@@ -219,17 +219,8 @@ class _ListFlavorAndTeasState extends State<ListFlavorAndTeasPage> {
       appBar: AppBar(
         title: const Center(
           child: Text(
-            "Flavors List",
+            "Flavors",
           ),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-            );
-          },
         ),
       ),
       body: FutureBuilder<List<Flavor>>(
