@@ -3,11 +3,10 @@ import 'package:bubble_mobile/data/models/bubble.dart';
 import 'package:sqflite/sqflite.dart';
 
 class BubbleRepository {
-  Future<List<String>> getBubbles() async {
+  Future<List<Bubble>> getBubbles() async {
     final db = await DatabaseProvider().database;
-    return await db
-        .query('Bubble')
-        .then((value) => value.map((e) => Bubble.fromMap(e).header).toList());
+    final List<Map<String, dynamic>> maps = await db.query('Bubble');
+    return List<Bubble>.from(maps.map((map) => Bubble.fromMap(map)));
   }
 
   Future<List<Bubble>> getBubblesByTeaId(int id) async {
@@ -22,7 +21,7 @@ class BubbleRepository {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<void> deleteBubble(int id) async {
+  Future<void> deleteBubble(int? id) async {
     final db = await DatabaseProvider().database;
     await db.delete('Bubble', where: 'id = ?', whereArgs: [id]);
   }

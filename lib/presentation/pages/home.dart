@@ -1,5 +1,6 @@
 import 'package:bubble_mobile/presentation/components/appBar.dart';
 import 'package:bubble_mobile/presentation/pages/feed.dart';
+import 'package:bubble_mobile/presentation/pages/saved_feeds.dart';
 import 'package:bubble_mobile/presentation/pages/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -40,7 +41,7 @@ class _HomePageState extends State<HomePage> {
             destinations: const [
               NavigationDestination(icon: Icon(Icons.home), label: 'Home', selectedIcon: Icon(Icons.home_outlined),),
               NavigationDestination(icon: Icon(Icons.local_cafe), label: 'Teas', selectedIcon: Icon(Icons.local_cafe_outlined)),
-              NavigationDestination(icon: Icon(Icons.save), label: 'Save', selectedIcon: Icon(Icons.save_outlined)),
+              NavigationDestination(icon: Icon(Icons.favorite_rounded), label: 'Save', selectedIcon: Icon(Icons.favorite_outline_rounded)),
               NavigationDestination(icon: Icon(Icons.settings), label: 'Config', selectedIcon: Icon(Icons.settings_outlined)),
             ],
           ),
@@ -55,6 +56,7 @@ class NavigationController extends GetxController {
 
   final screens = [
     const FeedPage(),
-    const SettingsPage()
+    const SettingsPage(),
+    const SavedFeedsPage()
   ];
 }
