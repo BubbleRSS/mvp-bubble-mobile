@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class ListFlavorAndTeasPage extends StatefulWidget {
+  const ListFlavorAndTeasPage({super.key});
+
   @override
   State<ListFlavorAndTeasPage> createState() => _ListFlavorAndTeasState();
 }
@@ -33,6 +35,7 @@ class _ListFlavorAndTeasState extends State<ListFlavorAndTeasPage> {
   Future<void> loadFlavors() async {
     try {
       _listFlavors = _flavorRepository.getFlavors();
+      print("LIST FLAVOR FLAVOR: $_listFlavors");
       List<Flavor> flavors = await _listFlavors;
       setState(() {
         _options.addAll(flavors);

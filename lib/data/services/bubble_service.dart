@@ -15,8 +15,9 @@ class BubbleService {
       teaId: 0, 
       header: feed['title'], 
       description: feed['description'], 
-      imageSource: feed['image'], 
-      datetime: feed['pubDate'].toString(),
+      imageProfile: feed['image_profile'],
+      imageSource: feed['image_source'], 
+      datetime: feed['pub_date'].toString(),
       link: feed['link']
     );
 
@@ -40,7 +41,7 @@ class BubbleService {
     
   }
 
-  Widget plataformName (plataformName) {
+  plataformName (String? plataformName) {
     return Text(
       plataformName ?? '',
       style: TextStyle(
@@ -50,16 +51,13 @@ class BubbleService {
   }
 
   datePost(datePost) {
-    if (datePost != null) {
-      return Text(
-        calculateDatePost(datePost),
-        style: TextStyle(
-          color: Colors.grey,
-        ),
-      );
-    } else {
-      return 'Unknown';
-    }
+    print("ENTROU DATE POST");
+    return Text(
+      datePost != null ? calculateDatePost(datePost) : 'Unknown',
+      style: TextStyle(
+        color: Colors.grey,
+      ),
+    );
   }
 
   calculateDatePost (datePost) {
@@ -70,11 +68,39 @@ class BubbleService {
     )}';
   }
 
-  Widget imageProfile (image) {
-    return CircleAvatar(
-      radius: 20.0,
-      backgroundImage: NetworkImage("https://pbs.twimg.com/profile_images/1389411778916978698/kA7uods9_400x400.jpg"),
-    );
+  imageProfile (String? image) {
+    try {
+      // if (image != null && image != "") {
+        return CircleAvatar(
+          radius: 20.0,
+          // child: ClipOval(
+          //   child: Image.network(
+          //     Uri.decodeFull(image),
+          //     fit: BoxFit.cover,
+          //     width: double.infinity,
+          //     height: double.infinity,
+          //   ),
+          // ),
+          backgroundImage: NetworkImage(image != null && image != "" ? image : "https://pbs.twimg.com/profile_images/1389411778916978698/kA7uods9_400x400.jpg")
+        //   backgroundImage: Image.network(
+        //   image,
+        //   height: 200.0,
+        //   width: double.infinity,
+        //   fit: BoxFit.cover,
+        // );
+          // "https://pbs.twimg.com/profile_images/1389411778916978698/kA7uods9_400x400.jpg"
+        );
+      // } 
+
+      // return Container(
+      //   height: 200.0,
+      //   width: double.infinity,
+      //   color: Colors.grey,
+      //   child: Center(child: Icon(Icons.broken_image, size: 50.0)),
+      // ); 
+    } catch (e) {
+      print("Ocorreu um erro ao fazer requisição de imagem: $e");
+    }
   }
 
   Widget description (description) {
@@ -93,6 +119,17 @@ class BubbleService {
       await launch(link);
     } else {
       throw 'Could not launch $link';
+    }
+  }
+
+  thumbnail (String? image) {
+    if (image != null && image != "") {
+      return Image.network(
+        image,
+        height: 200.0,
+        width: double.infinity,
+        fit: BoxFit.cover,
+      );
     }
   }
 

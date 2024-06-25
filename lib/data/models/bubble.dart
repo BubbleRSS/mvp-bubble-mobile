@@ -3,6 +3,7 @@ class Bubble {
   final int? teaId;
   final String? header;
   final String? description;
+  final String? imageProfile;
   final String? imageSource;
   final String? datetime;
   final String? link; 
@@ -12,6 +13,7 @@ class Bubble {
     this.teaId,
     this.header,
     this.description,
+    this.imageProfile,
     this.imageSource,
     this.datetime,
     this.link
@@ -23,6 +25,7 @@ class Bubble {
       teaId: map['tea_id'],
       header: map['header'],
       description: map['description'],
+      imageProfile: map['image_profile'],
       imageSource: map['image_source'],
       datetime: map['datetime'],
       link: map['link']
@@ -35,6 +38,7 @@ class Bubble {
       'tea_id': teaId,
       'header': header,
       'description': description,
+      'image_profile': imageProfile,
       'image_source': imageSource,
       'datetime': datetime,
       'link': link

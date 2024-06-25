@@ -32,7 +32,6 @@ class _SavedFeedsPageState extends State<SavedFeedsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Saved Bubbles')),
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: loadSavedFeeds()
@@ -57,7 +56,7 @@ class _SavedFeedsPageState extends State<SavedFeedsPage> {
     }
 
     return Center(
-      child: Text('Não há posts salvos.')
+      child: Text('Não há posts salvos')
     );
   }
   

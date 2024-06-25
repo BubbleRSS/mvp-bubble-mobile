@@ -30,8 +30,9 @@ class _SavedFeedCardState extends State<SavedFeedCard> {
       feed.addAll({
         'id': bubble.id,
         'title': bubble.header,
-        'imageProfile': bubble.imageSource,
-        'pubDate': bubble.datetime,
+        'pub_date': bubble.datetime,
+        'image_profile': bubble.imageProfile,
+        'image_source': bubble.imageSource,
         'description': bubble.description,
         'link': bubble.link
       });
@@ -45,7 +46,7 @@ class _SavedFeedCardState extends State<SavedFeedCard> {
           children: [
             Row(
               children: [
-                bubbleService.imageProfile(bubble.imageSource),
+                bubbleService.imageProfile(bubble.imageProfile),
                 SizedBox(width: 10.0),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,6 +65,7 @@ class _SavedFeedCardState extends State<SavedFeedCard> {
                 borderRadius: BorderRadius.circular(10.0),
               ),
               clipBehavior: Clip.antiAlias,
+              child: bubbleService.thumbnail(bubble.imageSource)
             ),
             SizedBox(height: 10.0),
             ButtonsFeedCard(feed, bubble.id!, handleBubbleFunction: removeBubble)

@@ -57,11 +57,26 @@ class DatabaseProvider {
         tea_id INTEGER,
         header TEXT,
         description TEXT,
+        image_profile TEXT,
         image_source TEXT,
         datetime TEXT,
         link TEXT,
         FOREIGN KEY (tea_id) REFERENCES Tea(id)
       )
+    ''');
+
+    await db.execute('''
+          INSERT INTO Flavor (title, icon, color)
+          VALUES ('Geek', 'null', 'red'),
+                 ('Nasa', 'null', 'blue'),
+                 ('G1', 'null', 'yellow')
+    ''');
+
+    await db.execute('''
+          INSERT INTO Tea (flavor_id, rss_link, title)
+          VALUES (1, 'https://nitter.poast.org/geekversez/rss', 'Geek'),
+                 (2, 'https://www.nasa.gov/feeds/iotd-feed', 'Nasa'),
+                 (3, 'https://g1.globo.com/rss/g1/brasil/', 'G1')
     ''');
   }
 

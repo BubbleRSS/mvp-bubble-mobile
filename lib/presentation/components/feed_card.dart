@@ -30,6 +30,8 @@ class FeedCardState extends State<FeedCard> {
       feed = widget.feedStateProps[widget.index];
     });
 
+    print("FEED: $feed");
+
     return Card(
       child: Container(
         padding: EdgeInsets.all(10.0),
@@ -38,13 +40,13 @@ class FeedCardState extends State<FeedCard> {
           children: [
             Row(
               children: [
-                bubbleService.imageProfile(feed['image']),
+                bubbleService.imageProfile(feed['image_profile']),
                 SizedBox(width: 10.0),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     bubbleService.plataformName(feed['title']),
-                    bubbleService.datePost(feed['pubDate']),
+                    bubbleService.datePost(feed['pub_date']),
                   ],
                 ),
               ],
@@ -57,6 +59,7 @@ class FeedCardState extends State<FeedCard> {
                 borderRadius: BorderRadius.circular(10.0),
               ),
               clipBehavior: Clip.antiAlias,
+              child: bubbleService.thumbnail(feed['image_source'])
             ),
             SizedBox(height: 10.0),
             ButtonsFeedCard(feed, widget.index, handleBubbleFunction: handleBubble)

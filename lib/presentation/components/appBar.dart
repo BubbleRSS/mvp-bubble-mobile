@@ -1,4 +1,3 @@
-import 'package:bubble_mobile/data/database_provider.dart';
 import 'package:bubble_mobile/data/models/tea.dart';
 import 'package:bubble_mobile/data/repositories/tea_repository.dart';
 import 'package:bubble_mobile/presentation/pages/flavors.dart';
@@ -6,7 +5,10 @@ import 'package:bubble_mobile/presentation/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:bubble_mobile/data/repositories/flavor_repository.dart';
 import 'package:bubble_mobile/data/models/flavor.dart';
-
+import 'package:provider/provider.dart';
+import 'package:bubble_mobile/cache/feed_cache_provider.dart';
+import 'package:bubble_mobile/presentation/pages/feed.dart';
+import 'package:bubble_mobile/api/feed.api.dart';
 
 class AppBarPage extends StatefulWidget implements PreferredSizeWidget{
   final Key? key;
@@ -16,7 +18,7 @@ class AppBarPage extends StatefulWidget implements PreferredSizeWidget{
   @override
   State<AppBarPage> createState() => _AppBarState();
 
-   @override
+  @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
 
@@ -25,14 +27,28 @@ class _AppBarState extends State<AppBarPage> {
   final List<String> _options = [];
   var dropdownValue = null;
   final TeaRepository _teaRepository = TeaRepository();
-
   final FlavorRepository _flavorRepository = FlavorRepository();
   late Future<List<Flavor>> listFlavor;
+  List<Map<String, dynamic>> flavorStateProps = [];
+  FeedApiState feedApiState = FeedApiState();
+  FeedPageState feedPage = FeedPageState();
 
   Future<void> loadFlavors() async {
     try {
-      listFlavor = _flavorRepository.getFlavors();
-      List<Flavor> flavors = await listFlavor;
+      List<Flavor> flavors = await _flavorRepository.getFlavors();
+      if (flavors != null) {
+        for (int i = 0; i < flavors.length; i++) {
+          flavorStateProps.add({
+            'id': flavors[i].id,
+            'title': flavors[i].title,
+            'icon': flavors[i].icon,
+            'color': flavors[i].color
+          });
+        }
+      }
+
+      print("flavorStateProps: $flavorStateProps");
+
       setState(() {
         _options.addAll(flavors.map((flavor) => flavor.title).toList());
         _isLoading = false; 
@@ -51,49 +67,47 @@ class _AppBarState extends State<AppBarPage> {
     setTextControllers();
   }
 
-    Future<void> _insertFlavor() async {
-      if(_titleFlavorController.text != null && _titleFlavorController.text != ""){
-        setTextControllers();
-        print(_colorFlavorController.text);
-        print(_iconFlavorController.text);
+  Future<void> _insertFlavor() async {
+    if(_titleFlavorController.text != null && _titleFlavorController.text != ""){
+      setTextControllers();
+      print(_colorFlavorController.text);
+      print(_iconFlavorController.text);
 
-          Flavor newFlavor = Flavor(
-            title: _titleFlavorController.text,
-            color:_colorFlavorController.text,
-            icon:_iconFlavorController.text,
-          );
-          await _flavorRepository.insertFlavor(newFlavor);
-          await loadFlavors();
-          setState(() {
-            _titleFlavorController.clear();
-            _colorFlavorController.clear();
-            _iconFlavorController.clear();
-          });
-
-        const snackBar = SnackBar(content: Text('Flavor adicionada com sucesso!', style: TextStyle(fontWeight: FontWeight.bold)), backgroundColor: Colors.green);
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }else{
-      const snackBar = SnackBar(content: Text('Preencha corretamente os campos',  style: TextStyle(fontWeight: FontWeight.bold)), backgroundColor: Colors.red);
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
-  }
-
-
-
-  Future<void> _insertTea() async {
-    setTextControllers();
-      Tea newTea = Tea(
-        title: _titleFlavorController.text, 
-        flavorId: _options.indexOf(_titleFlavorController.text),
-        rssLink: _rssFlavorController.text,
+      Flavor newFlavor = Flavor(
+        title: _titleFlavorController.text,
+        color:_colorFlavorController.text,
+        icon:_iconFlavorController.text,
       );
-      await _teaRepository.insertTea(newTea);
+      await _flavorRepository.insertFlavor(newFlavor);
       await loadFlavors();
       setState(() {
         _titleFlavorController.clear();
         _colorFlavorController.clear();
         _iconFlavorController.clear();
       });
+
+      const snackBar = SnackBar(content: Text('Flavor adicionada com sucesso!', style: TextStyle(fontWeight: FontWeight.bold)), backgroundColor: Colors.green);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      const snackBar = SnackBar(content: Text('Preencha corretamente os campos',  style: TextStyle(fontWeight: FontWeight.bold)), backgroundColor: Colors.red);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  Future<void> _insertTea() async {
+    setTextControllers();
+    Tea newTea = Tea(
+      title: _titleFlavorController.text, 
+      flavorId: _options.indexOf(_titleFlavorController.text),
+      rssLink: _rssFlavorController.text,
+    );
+    await _teaRepository.insertTea(newTea);
+    await loadFlavors();
+    setState(() {
+      _titleFlavorController.clear();
+      _colorFlavorController.clear();
+      _iconFlavorController.clear();
+    });
   }
 
   final TextEditingController _titleFlavorController = TextEditingController();
@@ -137,10 +151,8 @@ class _AppBarState extends State<AppBarPage> {
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
-                  setState(() {
-                    dropdownValue = newValue!;
-                  });
-                },
+                  handleChangeCategoryFeed(newValue);
+                }
               ),
             ),
           ],
@@ -243,76 +255,103 @@ class _AppBarState extends State<AppBarPage> {
       ),
     );
   }
-void showFormTeas(int? id) {
-  String? selectedCategory;
-  String linkRSSValue = '';
 
-  showModalBottomSheet(
-    context: context,
-    elevation: 5,
-    isScrollControlled: true,
-    builder: (_) => StatefulBuilder(
-      builder: (BuildContext context, StateSetter setState) {
-        return Container(
-          padding: EdgeInsets.only(
-            top: 15,
-            left: 15,
-            right: 15,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 120,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              DropdownButton<String>(
-                hint: Text('Select Flavor'),
-                value: selectedCategory,
-                items: _options.map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedCategory = newValue;
-                  });
-                },
-              ),
-              const SizedBox(height: 15),
-              if (selectedCategory != null) ...[
-                const SizedBox(height: 15),
-                TextField(
-                  controller: _rssFlavorController,
-                  onChanged: (value) {
+  void showFormTeas(int? id) {
+    String? selectedCategory;
+    String linkRSSValue = '';
+
+    showModalBottomSheet(
+      context: context,
+      elevation: 5,
+      isScrollControlled: true,
+      builder: (_) => StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return Container(
+            padding: EdgeInsets.only(
+              top: 15,
+              left: 15,
+              right: 15,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 120,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                DropdownButton<String>(
+                  hint: Text('Select Flavor'),
+                  value: selectedCategory,
+                  items: _options.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
                     setState(() {
-                      linkRSSValue = value;
+                      selectedCategory = newValue;
                     });
                   },
-                  decoration: InputDecoration(hintText: 'Link RSS'),
+                ),
+                const SizedBox(height: 15),
+                if (selectedCategory != null) ...[
+                  const SizedBox(height: 15),
+                  TextField(
+                    controller: _rssFlavorController,
+                    onChanged: (value) {
+                      setState(() {
+                        linkRSSValue = value;
+                      });
+                    },
+                    decoration: InputDecoration(hintText: 'Link RSS'),
+                  ),
+                ],
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (id == null) {
+                      await _insertTea();
+                    }
+                    // Implementar atualização de flavor se necessário
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'Create Category',
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
               ],
-              const SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: () async {
-                  if (id == null) {
-                    await _insertTea();
-                  }
-                  // Implementar atualização de flavor se necessário
-                  Navigator.of(context).pop();
-                },
-                child: Text(
-                  'Create Category',
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    ),
-  );
-  HomePage();
-}
+            ),
+          );
+        },
+      ),
+    );
+    const HomePage();
+  }
+
+  void handleChangeCategoryFeed(String? newValue) async {
+    if (dropdownValue != newValue!) {
+      setState(() {
+        dropdownValue = newValue;
+      });
+
+      for (Map<String, dynamic> flavor in flavorStateProps) {
+        if (flavor['title'] == newValue) {
+          List<Tea> teas = await _teaRepository.getTeasByFlavorId(flavor['id']);
+
+          if (teas != null) {
+            for (Tea tea in teas) {
+              ApiFeed().updateFeedUrl(tea.rssLink);
+              break;
+            }
+          }
+          break;
+        }
+      }
+
+      Provider.of<FeedCacheProvider>(context, listen: false).setFeeds([]);
+
+      await feedPage.loadFeeds(context);
+    }
+  }
 
 }

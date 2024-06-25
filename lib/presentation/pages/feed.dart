@@ -1,4 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bubble_mobile/cache/feed_cache_provider.dart';
@@ -20,26 +22,43 @@ class FeedPageState extends State<FeedPage> {
   @override
   void initState() {
     super.initState();
-    loadFeeds();
+    loadFeeds(context);
   }
 
-  Future<void> loadFeeds() async {
+  DateTime randomDate() {
+    final random = Random();
+    final start = DateTime(2024, DateTime.now().month, DateTime.now().day);
+    final end = DateTime.now();
+    return start.add(Duration(seconds: random.nextInt(end.difference(start).inSeconds)));
+  }
+
+  Future<void> loadFeeds(BuildContext context) async {
+    print("ENTROU LOAD FEEDS");
     await feedApiState.getFeeds().then((result) {
       if (result != null) {
         List<Map<String, dynamic>> feedStateProps = [];
         List<RssItem>? items = result.items;
         for (int i = 0; i < items!.length; i++) {
+          RssItem itemRss = items[i];
+          print("RSS ITEM FOR: $itemRss");
+          print(itemRss.pubDate);
+          print(itemRss.description);
+          print(itemRss.enclosure?.url);
+          print(itemRss.link);
           feedStateProps.add({
             'id': null,
             'title': result.title,
-            'imageProfile': result.image?.url,
-            'pubDate': items[i].pubDate,
+            'pub_date': items[i].pubDate ?? randomDate(),
+            'image_profile': result.image?.url,
+            'image_source': items[i].enclosure?.url ?? 
+                            (items[i].media?.contents != null && items[i].media!.contents!.isNotEmpty ? items[i].media!.contents![0].url : ''),
             'description': items[i].title,
             'link': items[i].link ?? items[i].guid ?? '',
             'state': Provider.of<FeedCacheProvider>(context, listen: false).getFeedState(i)
           });
         }
         Provider.of<FeedCacheProvider>(context, listen: false).setFeeds(feedStateProps);
+        print("FEED LIST: $feedStateProps");
       }
     });
   }

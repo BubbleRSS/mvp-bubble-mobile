@@ -10,10 +10,18 @@ class FeedApi extends StatefulWidget {
 }
 
 class FeedApiState extends State<FeedApi> {
-  static const String feedUrl = 'https://nitter.poast.org/geekversez/rss';
+  String feedUrl = '';
+
+  @override
+  void initState() {
+    super.initState();
+    feedUrl = ApiFeed().getFeedUrl() != '' ? ApiFeed().getFeedUrl() : 'https://nitter.poast.org/geekversez/rss';
+  }
 
   Future<RssFeed?> getFeeds() async {
     try {
+      feedUrl = ApiFeed().getFeedUrl() != '' ? ApiFeed().getFeedUrl() : 'https://nitter.poast.org/geekversez/rss';
+      print("FEED URL GET FEEDS: $feedUrl");
       final client = http.Client();
       final response = await client.get(Uri.parse(feedUrl));
       return RssFeed.parse(response.body);
@@ -26,4 +34,24 @@ class FeedApiState extends State<FeedApi> {
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class ApiFeed {
+  static final ApiFeed _instance = ApiFeed._internal();
+
+  String feedUrl = '';
+
+  factory ApiFeed() {
+    return _instance;
+  }
+
+  ApiFeed._internal();
+
+  void updateFeedUrl(String newFeedUrl) {
+    feedUrl = newFeedUrl;
+  }
+
+  String getFeedUrl() {
+    return feedUrl;
+  }
 }
