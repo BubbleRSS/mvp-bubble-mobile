@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:bubble_mobile/presentation/components/appBar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bubble_mobile/cache/feed_cache_provider.dart';
@@ -51,6 +52,7 @@ class FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar:  AppBarPage(),
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: Consumer<FeedCacheProvider>(
