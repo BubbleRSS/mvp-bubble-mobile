@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:bubble_mobile/cache/feed_cache_provider.dart';
 import 'package:bubble_mobile/presentation/pages/home.dart';
 import 'package:bubble_mobile/data/database_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -17,7 +19,14 @@ Future<void> main() async {
 
   await DatabaseProvider().database;
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => FeedCacheProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

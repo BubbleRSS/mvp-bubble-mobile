@@ -1,6 +1,7 @@
 import 'package:bubble_mobile/presentation/components/appBar.dart';
 import 'package:bubble_mobile/presentation/pages/feed.dart';
 import 'package:bubble_mobile/presentation/pages/flavors.dart';
+import 'package:bubble_mobile/presentation/pages/saved_feeds.dart';
 import 'package:bubble_mobile/presentation/pages/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -56,6 +57,7 @@ class NavigationController extends GetxController {
   final screens = [
     const FeedPage(),
     ListFlavorAndTeasPage(),
+    const SavedFeedsPage(),
     const SettingsPage()
   ];
 }

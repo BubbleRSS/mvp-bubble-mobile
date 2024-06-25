@@ -1,18 +1,20 @@
 class Bubble {
   final int? id; // Nullable ID
-  final int teaId;
-  final String header;
-  final String description;
-  final String imageSource;
-  final String datetime;
+  final int? teaId;
+  final String? header;
+  final String? description;
+  final String? imageSource;
+  final String? datetime;
+  final String? link; 
 
   Bubble({
     this.id,
-    required this.teaId,
-    required this.header,
-    required this.description,
-    required this.imageSource,
-    required this.datetime,
+    this.teaId,
+    this.header,
+    this.description,
+    this.imageSource,
+    this.datetime,
+    this.link
   });
 
   factory Bubble.fromMap(Map<String, dynamic> map) {
@@ -23,6 +25,7 @@ class Bubble {
       description: map['description'],
       imageSource: map['image_source'],
       datetime: map['datetime'],
+      link: map['link']
     );
   }
 
@@ -34,6 +37,7 @@ class Bubble {
       'description': description,
       'image_source': imageSource,
       'datetime': datetime,
+      'link': link
     };
   }
 }
