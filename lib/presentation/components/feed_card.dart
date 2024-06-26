@@ -30,8 +30,6 @@ class FeedCardState extends State<FeedCard> {
       feed = widget.feedStateProps[widget.index];
     });
 
-    print("FEED: $feed");
-
     return Card(
       child: Container(
         padding: EdgeInsets.all(10.0),

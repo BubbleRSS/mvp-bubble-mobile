@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:webfeed/webfeed.dart';
 import 'package:http/http.dart' as http;
@@ -21,9 +22,13 @@ class FeedApiState extends State<FeedApi> {
   Future<RssFeed?> getFeeds() async {
     try {
       feedUrl = ApiFeed().getFeedUrl() != '' ? ApiFeed().getFeedUrl() : 'https://nitter.poast.org/geekversez/rss';
-      print("FEED URL GET FEEDS: $feedUrl");
       final client = http.Client();
-      final response = await client.get(Uri.parse(feedUrl));
+      final response = await client.get(
+        Uri.parse(feedUrl),
+        headers: { 
+          HttpHeaders.accessControlAllowOriginHeader: "*"
+        }
+      );
       return RssFeed.parse(response.body);
     } catch (e) {
       print('Ocorreu um erro ao fazer requisição: $e');

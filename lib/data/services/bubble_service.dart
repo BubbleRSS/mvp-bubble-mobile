@@ -51,7 +51,6 @@ class BubbleService {
   }
 
   datePost(datePost) {
-    print("ENTROU DATE POST");
     return Text(
       datePost != null ? calculateDatePost(datePost) : 'Unknown',
       style: TextStyle(
@@ -70,34 +69,22 @@ class BubbleService {
 
   imageProfile (String? image) {
     try {
-      // if (image != null && image != "") {
+      if (image != null && image != "") {
         return CircleAvatar(
           radius: 20.0,
-          // child: ClipOval(
-          //   child: Image.network(
-          //     Uri.decodeFull(image),
-          //     fit: BoxFit.cover,
-          //     width: double.infinity,
-          //     height: double.infinity,
-          //   ),
-          // ),
-          backgroundImage: NetworkImage(image != null && image != "" ? image : "https://pbs.twimg.com/profile_images/1389411778916978698/kA7uods9_400x400.jpg")
-        //   backgroundImage: Image.network(
-        //   image,
-        //   height: 200.0,
-        //   width: double.infinity,
-        //   fit: BoxFit.cover,
-        // );
-          // "https://pbs.twimg.com/profile_images/1389411778916978698/kA7uods9_400x400.jpg"
+          backgroundImage: NetworkImage(image)
         );
-      // } 
+      } 
 
-      // return Container(
-      //   height: 200.0,
-      //   width: double.infinity,
-      //   color: Colors.grey,
-      //   child: Center(child: Icon(Icons.broken_image, size: 50.0)),
-      // ); 
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(20.0),
+        child: Container(
+          height: 40.0,
+          width: 40.0,
+          color: Colors.grey,
+          child: Center(child: Icon(Icons.broken_image, size: 30.0)),
+        ),
+      ); 
     } catch (e) {
       print("Ocorreu um erro ao fazer requisição de imagem: $e");
     }
